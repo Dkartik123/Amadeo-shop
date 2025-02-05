@@ -5,6 +5,15 @@ generator client {
 datasource db {
   provider = "postgresql"
   url = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_NON_POOLING")
+}
+
+model Category {
+  id Int @id @default(autoincrement())
+  name String
+  products Product[]
+
+  
 }
 
 model User {
@@ -12,16 +21,141 @@ model User {
   email String @unique
   fullName String
   password String
+  verified DateTime
+
+  role UserRole @default(USER)
+  verificationCode VerificationCode?
+
+  provider String?
+  providerId String?
+
+  cart Cart?
+  orders Order[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Product {
   id Int @id @default(autoincrement())
+
   name String
   price Int
+  size Int
   description String
   imageUrl String
+
+  cartItems CartItem[]
+  orderItems OrderItem[]
+
+  categoryId Int
+  category Category @relation(fields: [categoryId], references: [id])
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Cart {
+  id Int @id @default(autoincrement())
+  
+  totalPrice Int @default(0)
+  totalQuantity Int @default(0)
+  
+  items CartItem[]
+  
+  userId Int? @unique
+  user User? @relation(fields: [userId], references: [id])
+  
+  token String
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CartItem {
+  id Int @id @default(autoincrement())
+  
+  quantity Int @default(1)
+  
+  cartId Int
+  cart Cart @relation(fields: [cartId], references: [id])
+  
+  productId Int
+  product Product @relation(fields: [productId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+   
+}
+
+model Order {
+  id Int @id @default(autoincrement())
+  userId Int?
+  user User? @relation(fields: [userId], references: [id])
+  
+  items OrderItem[]
+  
+  totalPrice Int @default(0)
+  totalQuantity Int @default(0)
+  status OrderStatus @default(PENDING)
+  
+  paymentId String?
+  paymentIntentId String?
+  paymentStatus String?
+  stripeSessionId String?
+  
+  
+  shippingAddress String?
+  shippingCity String?
+  shippingPostalCode String?
+  shippingCountry String?
+  
+  fullName String?
+  email String?
+  phone String?
+
+  token String
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model OrderItem {
+  id Int @id @default(autoincrement())
+  orderId Int
+  order Order @relation(fields: [orderId], references: [id])
+  
+  productId Int
+  product Product @relation(fields: [productId], references: [id])
+  
+  quantity Int @default(1)
+  price Int
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model VerificationCode {
+  id Int @id @default(autoincrement())
+
+  userId Int @unique
+  user User @relation(fields: [userId], references: [id])
+
+  code String @unique
+  createdAt DateTime @default(now())
+  
+  @@unique([userId, code])
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  PAID
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+enum UserRole {
+  ADMIN
+  USER
 }
