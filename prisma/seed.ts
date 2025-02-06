@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { hashSync } from "bcrypt";
+import { categories } from "./constants";
 const prisma = new PrismaClient();
 
 async function up() {
@@ -25,7 +26,7 @@ async function up() {
 
   // Создаем категории
   await prisma.category.createMany({
-    data: [{ name: "Пицца" }, { name: "Напитки" }, { name: "Десерты" }],
+    data: categories,
   });
 
   // Создаем продукты

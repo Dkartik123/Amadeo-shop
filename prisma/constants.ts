@@ -1,17 +1,16 @@
 export const categories = [
   {
     id: 1,
-    name: "Пицца",
-    slug: "pizza",
+    name: "Kooliriided",
   },
-  // Добавьте другие категории по необходимости
-];
-
-export const _ingredients = [
-  { id: 1, name: "Пепперони" },
-  { id: 2, name: "Сыр" },
-  { id: 3, name: "Томатный соус" },
-  // Добавьте другие ингредиенты
+  {
+    id: 2,
+    name: "Beebiriided",
+  },
+  {
+    id: 3,
+    name: "Tudrukud",
+  },
 ];
 
 export const products = [
@@ -21,5 +20,10 @@ export const products = [
     imageUrl: "url-to-image",
     categoryId: 1,
   },
-  // Добавьте другие продукты
+  {
+    id: 2,
+    name: "Продукт 2",
+    imageUrl: "url-to-image",
+    categoryId: 2,
+  },
 ];
