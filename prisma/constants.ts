@@ -27,3 +27,20 @@ export const products = [
     categoryId: 2,
   },
 ];
+
+export const SEASONS = {
+  KEVAD: "kevad",
+  SUVI: "suvi",
+  SUGIS: "sügis",
+  TALV: "talv",
+} as const;
+
+export const seasonLabels: Record<keyof typeof SEASONS, string> = {
+  KEVAD: "Kevad",
+  SUVI: "Suvi",
+  SUGIS: "Sügis",
+  TALV: "Talv",
+};
+
+// Тип для сезонов
+export type SeasonType = (typeof SEASONS)[keyof typeof SEASONS];

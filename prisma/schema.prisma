@@ -42,7 +42,8 @@ model Product {
   price Int
   size Int
   description String
-  imageUrl String
+  imageUrl String?
+  season String?
 
   cartItems CartItem[]
   orderItems OrderItem[]
