@@ -6,12 +6,14 @@ import React from "react";
 import { Button } from "../ui";
 import { Title } from "./title";
 
+const DEFAULT_IMAGE = "https://via.placeholder.com/300x400?text=No+Image";
+
 interface Props {
   id: number;
   name: string;
   price: number;
-  imageUrl: string;
-  description: any[];
+  imageUrl: string | null;
+  description: string;
   className?: string;
 }
 
@@ -29,7 +31,7 @@ export const ProductCard: React.FC<Props> = ({
         <div className="relative bg-secondary rounded-lg aspect-square p-[2px]">
           <img
             className="w-full h-full object-cover rounded-lg"
-            src={imageUrl}
+            src={imageUrl || DEFAULT_IMAGE}
             alt={name}
           />
         </div>
@@ -40,7 +42,7 @@ export const ProductCard: React.FC<Props> = ({
 
         <div className="flex justify-between items-center mt-4">
           <span className="text-[20px]">
-            от <b>{price} €</b>
+            <b>{price} €</b>
           </span>
 
           <Button variant="secondary" className="text-base font-bold">

@@ -1,21 +1,22 @@
 "use client";
 import React from "react";
 
+import { Category } from "@prisma/client";
 import { Input } from "../ui/input";
 import { FilterChecboxProps, FilterCheckbox } from "./filter-checkbox";
 import { useSet } from "./hooks/useSet";
 
-type Item = FilterChecboxProps;
-
 interface Props {
   title: string;
-  items: Item[];
-  defaultItems?: Item[];
+  items: FilterChecboxProps[];
+  defaultItems?: FilterChecboxProps[];
   limit?: number;
   searchInputPlaceholder?: string;
   className?: string;
   onChange?: (values: string[]) => void;
   defaultValue?: string[];
+  categories?: Category[];
+  onFilterChange?: (selectedCategories: number[]) => void;
 }
 
 export const CheckboxFiltersGroup: React.FC<Props> = ({

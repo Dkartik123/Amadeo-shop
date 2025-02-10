@@ -1,3 +1,5 @@
-export enum ApiRoutes {
-  SEARCH_PRODUCTS = "products/search",
-}
+export const ApiRoutes = {
+  SEARCH_PRODUCTS: "/products/search",
+  PRODUCTS: "/products/filter",
+  CATEGORIES: "/categories",
+} as const;
