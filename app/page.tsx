@@ -1,67 +1,59 @@
-"use client";
-
 import {
   Container,
   Filters,
   ProductsGroupList,
+  Stories,
   Title,
   TopBar,
-} from "@/components/shared";
-import { useFilters } from "@/hooks/useFilters";
-import { getFilteredProducts } from "@/services/products";
-import { useEffect } from "react";
+} from "@/shared/components/shared";
+import { GetSearchParams, findPizzas } from "@/shared/lib/find-pizzas";
+import { Suspense } from "react";
 
-export default function Home() {
-  const { categories, products, setProducts, loading } = useFilters();
-
-  // Загрузка начальных продуктов
-  useEffect(() => {
-    const loadInitialProducts = async () => {
-      const initialProducts = await getFilteredProducts([]);
-      setProducts(initialProducts);
-    };
-    loadInitialProducts();
-  }, []);
-
-  // Группируем продукты по категориям
-  const productsByCategory = products.reduce((acc, product) => {
-    const categoryId = product.categoryId;
-    if (!acc[categoryId]) {
-      acc[categoryId] = [];
-    }
-    acc[categoryId].push(product);
-    return acc;
-  }, {} as Record<number, typeof products>);
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: GetSearchParams;
+}) {
+  const categories = await findPizzas(searchParams);
 
   return (
     <>
       <Container className="mt-10">
-        <Title text="Riided" size="lg" className="font-extrabold" />
+        <Title text="Все пиццы" size="lg" className="font-extrabold" />
       </Container>
-      <TopBar />
+
+      <TopBar
+        categories={categories.filter(
+          (category) => category.products.length > 0
+        )}
+      />
+
+      <Stories />
+
       <Container className="mt-10 pb-14">
-        <div className="flex gap-[60px]">
+        <div className="flex gap-[80px]">
           {/* Фильтрация */}
           <div className="w-[250px]">
-            <Filters categories={categories} />
+            <Suspense>
+              <Filters />
+            </Suspense>
           </div>
 
           {/* Список товаров */}
           <div className="flex-1">
-            {loading ? (
-              <div>Loading...</div>
-            ) : (
-              <div className="flex flex-col gap-16">
-                {categories.map((category) => (
-                  <ProductsGroupList
-                    key={category.id}
-                    title={category.name}
-                    categoryId={category.id}
-                    items={productsByCategory[category.id] || []}
-                  />
-                ))}
-              </div>
-            )}
+            <div className="flex flex-col gap-16">
+              {categories.map(
+                (category) =>
+                  category.products.length > 0 && (
+                    <ProductsGroupList
+                      key={category.id}
+                      title={category.name}
+                      categoryId={category.id}
+                      items={category.products}
+                    />
+                  )
+              )}
+            </div>
           </div>
         </div>
       </Container>

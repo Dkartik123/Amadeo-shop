@@ -8,7 +8,7 @@ export async function GET() {
   } catch (error) {
     console.error("[CATEGORIES_GET]", error);
     return NextResponse.json(
-      { error: "Internal Server Error" },
+      { error: "Failed to fetch categories" },
       { status: 500 }
     );
   }

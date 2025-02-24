@@ -21,6 +21,11 @@ export const Filters: React.FC<Props> = ({ className, categories }) => {
     filters.updatePrices("priceTo", prices[1]);
   };
 
+  const handleCategoryChange = (values: string[]) => {
+    const categoryIds = values.map(Number);
+    filters.setSelectedCategories(categoryIds);
+  };
+
   return (
     <div className={className}>
       <Title text="Filter" size="sm" className="mb-6 font-bold" />
@@ -32,10 +37,8 @@ export const Filters: React.FC<Props> = ({ className, categories }) => {
           text: cat.name,
           value: String(cat.id),
         }))}
-        onChange={(values) => {
-          const categoryIds = values.map(Number);
-          filters.setSelectedCategories(categoryIds);
-        }}
+        onChange={handleCategoryChange}
+        defaultValue={filters.selectedCategories.map(String)}
       />
 
       <div className="mt-5 border-y border-y-neutral-100 py-6 pb-7">
@@ -53,8 +56,8 @@ export const Filters: React.FC<Props> = ({ className, categories }) => {
           />
           <Input
             type="number"
-            min={10}
-            max={200}
+            min={0}
+            max={1000}
             placeholder="1000"
             value={String(filters.prices.priceTo)}
             onChange={(e) =>
@@ -65,7 +68,7 @@ export const Filters: React.FC<Props> = ({ className, categories }) => {
         <div className="mt-4">
           <RangeSlider
             min={0}
-            max={200}
+            max={1000}
             step={10}
             value={[filters.prices.priceFrom, filters.prices.priceTo]}
             onValueChange={updatePrices}

@@ -20,6 +20,40 @@ export const useFilters = () => {
     }));
   };
 
+  // Загрузка категорий при монтировании
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axiosInstance.get("/categories");
+        console.log("Fetched categories:", response.data);
+        setCategories(response.data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  // Загрузка всех продуктов при монтировании
+  useEffect(() => {
+    const fetchInitialProducts = async () => {
+      try {
+        setLoading(true);
+        const response = await axiosInstance.get("/products/filter");
+        console.log("Initial products:", response.data);
+        setProducts(response.data);
+      } catch (error) {
+        console.error("Error fetching initial products:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (categories.length > 0) {
+      fetchInitialProducts();
+    }
+  }, [categories]); // Загружаем продукты после получения категорий
+
   // Получаем отфильтрованные продукты при изменении фильтров
   useEffect(() => {
     const fetchFilteredProducts = async () => {
@@ -34,6 +68,7 @@ export const useFilters = () => {
               : undefined,
           },
         });
+        console.log("Filtered products response:", response.data);
         setProducts(response.data);
       } catch (error) {
         console.error("Error fetching filtered products:", error);
@@ -42,17 +77,14 @@ export const useFilters = () => {
       }
     };
 
-    fetchFilteredProducts();
-  }, [prices.priceFrom, prices.priceTo, selectedCategories]);
+    const timeoutId = setTimeout(() => {
+      if (categories.length > 0) {
+        fetchFilteredProducts();
+      }
+    }, 300);
 
-  // Загрузка категорий при монтировании
-  useEffect(() => {
-    const fetchCategories = async () => {
-      const response = await axiosInstance.get("/categories");
-      setCategories(response.data);
-    };
-    fetchCategories();
-  }, []);
+    return () => clearTimeout(timeoutId);
+  }, [prices.priceFrom, prices.priceTo, selectedCategories, categories]);
 
   return {
     prices,
