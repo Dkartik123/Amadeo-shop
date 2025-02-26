@@ -17,6 +17,7 @@ export const Filters: React.FC<Props> = ({ className, categories }) => {
   const filters = useFilters();
 
   const updatePrices = (prices: number[]) => {
+    console.log(prices);
     filters.updatePrices("priceFrom", prices[0]);
     filters.updatePrices("priceTo", prices[1]);
   };
@@ -31,8 +32,7 @@ export const Filters: React.FC<Props> = ({ className, categories }) => {
       <Title text="Filter" size="sm" className="mb-6 font-bold" />
 
       <CheckboxFiltersGroup
-        title="Riided"
-        className="mb-5"
+        title="Riided"         className="mb-5"
         items={categories.map((cat) => ({
           text: cat.name,
           value: String(cat.id),
