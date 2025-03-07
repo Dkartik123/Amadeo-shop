@@ -42,8 +42,8 @@ model Product {
 
     name     String
     imageUrl String
+    description String
 
-    ingredients Ingredient[]
     items       ProductItem[]
 
     category   Category @relation(fields: [categoryId], references: [id])
@@ -57,8 +57,8 @@ model ProductItem {
     id Int @id @default(autoincrement())
 
     price     Int
-    size      Int?
-    pizzaType Int?
+    size      String?
+    color      String?
 
     cartItems CartItem[]
 
